@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ปฏิทินเวร ศปป.๔ กอ.รมน. — กรกฎาคม ๒๕๖๙</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Sarabun', 'TH Sarabun New', sans-serif;
+    background: #F5F4F0;
+    color: #1a1a1a;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+
+  header { margin-bottom: 1.5rem; }
+
+  header h1 {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: 0.01em;
+  }
+
+  header p {
+    font-size: 18px;
+    font-weight: 700;
+    color: #555;
+    margin-top: 6px;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .leg {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 17px;
+    font-weight: 700;
+    color: #333;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 6px 14px;
+  }
+
+  .leg-dot {
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .dow {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 800;
+    color: #777;
+    padding: 8px 0;
+    letter-spacing: 0.02em;
+  }
+
+  .dow.sun { color: #B91C1C; }
+  .dow.sat { color: #1D4ED8; }
+
+  .cell {
+    background: #fff;
+    border: 1px solid #E0DED8;
+    border-radius: 10px;
+    padding: 10px 8px 8px;
+    min-height: 160px;
+    vertical-align: top;
+  }
+
+  .cell.empty {
+    background: #EEECE8;
+    border-color: transparent;
+  }
+
+  .cell.sun .daynum { color: #B91C1C; }
+  .cell.sat .daynum { color: #1D4ED8; }
+
+  .daynum {
+    font-size: 20px;
+    font-weight: 800;
+    color: #222;
+    margin-bottom: 7px;
+  }
+
+  .entry {
+    font-size: 15px;
+    font-weight: 700;
+    padding: 5px 8px;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    line-height: 1.5;
+  }
+
+  /* น.ควบคุมและรายงาน — น้ำเงินเข้ม */
+  .e1 {
+    background: #1e3a8a;
+    color: #DBEAFE;
+  }
+
+  /* ผช.น.ควบคุม/น.เวรผู้ใหญ่ — เขียวมรกต */
+  .e2 {
+    background: #065F46;
+    color: #D1FAE5;
+  }
+
+  /* น.ทหารประจำส่วนปฏิบัติการ — ม่วงอ่อน */
+  .e4 {
+    background: #EDE9FE;
+    color: #3B0764;
+    border: 1px solid #C4B5FD;
+  }
+
+  /* เจ้าหน้าที่เสมียน — เทาอุ่น */
+  .e5 {
+    background: #E8E4DC;
+    color: #2C2820;
+    border: 1px solid #C8C2B8;
+  }
+
+  @media print {
+    body { padding: 0.5rem; background: #fff; }
+    .cell { min-height: 130px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ปฏิทินเวร ศปป.๔ กอ.รมน. — กรกฎาคม ๒๕๖๙</h1>
+  <p>รายชื่อผู้ปฏิบัติหน้าที่ที่สังกัด ศปป.๔ กอ.รมน. ประจำเดือน ก.ค. ๖๙</p>
+</header>
+
+<div class="legend">
+  <div class="leg"><div class="leg-dot" style="background:#1e3a8a"></div>น.ควบคุมและรายงาน</div>
+  <div class="leg"><div class="leg-dot" style="background:#065F46"></div>ผช.น.ควบคุม/น.เวรผู้ใหญ่</div>
+  <div class="leg"><div class="leg-dot" style="background:#7C3AED"></div>น.ทหารประจำส่วนปฏิบัติการ</div>
+  <div class="leg"><div class="leg-dot" style="background:#888"></div>เจ้าหน้าที่เสมียน</div>
+</div>
+
+<div class="calendar" id="cal"></div>
+
+<script>
+const DATA = {
+  1:  [{r:"e4",n:"พ.ท. ธนารักษ์ นามบัณฑิต"}],
+  2:  [{r:"e4",n:"พ.ท. ศราวูส สัตตบุศย์"}],
+  3:  [{r:"e4",n:"พ.ต. นพพร โภคสุวรรณ"}],
+  4:  [{r:"e4",n:"พ.ท. สมบัติ ดวงผาสุข"}],
+  5:  [{r:"e1",n:"พ.อ.หญิง บุษบา โพอุทัย"},{r:"e4",n:"ร.อ. ธนกร เชื้อเมืองพาน"}],
+  6:  [{r:"e4",n:"ร.อ. เกรียงไกร เฮียมพินิจ"}],
+  7:  [{r:"e4",n:"ร.ท. ไพรัช มนตรี"}],
+  8:  [{r:"e4",n:"ร.ท. นรภัทร คงคารัตน์"}],
+  9:  [{r:"e4",n:"ร.ต. วิชัย จันทรึงสรรค์"}],
+  10: [{r:"e4",n:"พ.ท. ธนารักษ์ นามบัณฑิต"}],
+  11: [{r:"e4",n:"พ.ท. ศราวูส สัตตบุศย์"}],
+  12: [{r:"e4",n:"ร.ท. ไพรัช มนตรี"}],
+  13: [{r:"e4",n:"พ.ท. สมบัติ ดวงผาสุข"}],
+  14: [{r:"e4",n:"ร.ท. นรภัทร คงคารัตน์"}],
+  15: [{r:"e4",n:"ร.ต. วิชัย จันทรึงสรรค์"}],
+  16: [{r:"e4",n:"พ.ท. ธนารักษ์ นามบัณฑิต"},{r:"e5",n:"จ.ส.อ. ณรงค์เดช บุญโลกเกล"}],
+  17: [{r:"e4",n:"พ.ท. ศราวูส สัตตบุศย์"},{r:"e5",n:"จ.ส.อ. พูนศักดิ์ พยับตรี"}],
+  18: [{r:"e4",n:"พ.ต. นพพร โภคสุวรรณ"},{r:"e5",n:"จ.ส.อ. ณรงค์ จันทร์อี"}],
+  19: [{r:"e4",n:"ร.อ. ธนกร เชื้อเมืองพาน"},{r:"e5",n:"จ.ส.อ. ภิราย มีแก้วน้อย"}],
+  20: [{r:"e2",n:"พ.อ.หญิง อุษณีย์ อรรคบุตร"},{r:"e4",n:"ร.อ. ธนกร เชื้อเมืองพาน"},{r:"e5",n:"จ.ส.อ. ณรกฤต พิทักษ์คงคา"}],
+  21: [{r:"e4",n:"ร.อ. เกรียงไกร เฮียมพินิจ"}],
+  22: [{r:"e4",n:"ร.ท. นรภัทร คงคารัตน์"}],
+  23: [{r:"e4",n:"ร.อ. ธนกร เชื้อเมืองพาน"},{r:"e5",n:"จ.ส.อ. สัมพันธ์ พุทธรักษา"}],
+  24: [{r:"e4",n:"ร.ต. วิชัย จันทรึงสรรค์"}],
+  25: [{r:"e4",n:"ร.อ. เกรียงไกร เฮียมพินิจ"},{r:"e5",n:"จ.ส.อ. ก้องเกียรติ อิงนันทศิริกุล"}],
+  26: [{r:"e4",n:"ร.ท. นรภัทร คงคารัตน์"},{r:"e5",n:"จ.ส.อ. กรกช บุญเสริมส่ง"}],
+  27: [{r:"e4",n:"ร.ต. วิชัย จันทรึงสรรค์"},{r:"e5",n:"จ.ส.อ. สีบสาย สายทรัพย์สิน"}],
+  28: [{r:"e4",n:"ร.อ. ธนกร เชื้อเมืองพาน"}],
+  29: [{r:"e4",n:"พ.ต. นพพร โภคสุวรรณ"},{r:"e5",n:"จ.ส.อ. วัชรพงษ์ อู่สูงเนิน"}],
+  30: [{r:"e4",n:"พ.ท. สมบัติ ดวงผาสุข"}],
+  31: [{r:"e4",n:"ร.อ. ธนกร เชื้อเมืองพาน"},{r:"e5",n:"ส.อ. สาธิต อยู่ถาวร"}],
+};
+
+const DOW_LABELS = ["อา.","จ.","อ.","พ.","พฤ.","ศ.","ส."];
+const DOW_CLASSES = ["sun","","","","","","sat"];
+const cal = document.getElementById('cal');
+
+DOW_LABELS.forEach((d,i) => {
+  const el = document.createElement('div');
+  el.className = 'dow ' + DOW_CLASSES[i];
+  el.textContent = d;
+  cal.appendChild(el);
+});
+
+const startDay = 2;
+for(let i = 0; i < startDay; i++){
+  const el = document.createElement('div');
+  el.className = 'cell empty';
+  cal.appendChild(el);
+}
+
+for(let d = 1; d <= 31; d++){
+  const dow = (startDay + d - 1) % 7;
+  const el = document.createElement('div');
+  el.className = 'cell ' + DOW_CLASSES[dow];
+  let html = `<div class="daynum">${d}</div>`;
+  if(DATA[d]){
+    DATA[d].forEach(e => {
+      html += `<div class="entry ${e.r}">${e.n}</div>`;
+    });
+  }
+  el.innerHTML = html;
+  cal.appendChild(el);
+}
+</script>
+</body>
+</html>
